@@ -149,3 +149,58 @@ test expect-equal $(many-child) '''
     </p>
   </body>
 </html>'''
+
+proc find-hellos {
+  for line in (io.stdin) {
+    if (line ~ / 'hello' /) {
+      html p class=has-hello $line
+    } else {
+      html p $line
+    }
+  }
+}
+
+proc pipes {
+  html document {
+    head { : }
+    body {
+      printf 'a\nb\nhello\nc\n' | find-hellos
+    }
+  }
+}
+
+test expect-equal $(pipes) '''
+<!DOCTYPE html>
+<html>
+  <head></head>
+  <body>
+    <p>
+      a
+    </p>
+    <p>
+      b
+    </p>
+    <p class="has-hello">
+      hello
+    </p>
+    <p>
+      c
+    </p>
+  </body>
+</html>'''
+
+proc pipes-inner {
+  html document {
+    head { : }
+    body {
+      printf 'a\nb\nhello\nc\n' | find-hellos | true
+    }
+  }
+}
+
+test expect-equal $(pipes-inner) '''
+<!DOCTYPE html>
+<html>
+  <head></head>
+  <body></body>
+</html>'''

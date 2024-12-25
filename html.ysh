@@ -35,7 +35,9 @@ var types = :| h1 h2 h3 h4 p head body link div \
                table thead tbody th tr td |
 var nodes = {}
 for nodeType in (types) {
-  setvar nodes[nodeType] = Node(nodeType)
+  setvar node = Node(nodeType)
+  setvar nodes[nodeType] = node
+  call setVar(nodeType, node)
 }
 
 # TODO: proper escaping
@@ -98,3 +100,8 @@ proc document (;;; block) {
 }
 
 var __provide__ = :| document |
+
+# Expose the html nodes under the html.ysh module namespace
+for node in (nodes) {
+  call __provide__->append(node)
+}
