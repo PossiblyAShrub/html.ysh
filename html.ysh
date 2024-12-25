@@ -1,0 +1,100 @@
+# Nodes are dynamically created using a common `Node` object which, when invoked,
+# adds a new child of the given node and evaluates the passed body (if any.)
+func Node(type) {
+  proc invoke (...args; self;; block=null) {
+    var attrs = {}
+    var children = []
+    for arg in (args) {
+      if (arg ~ / '=' /) {
+        # This is an attribute
+        var key, value = arg.split('=')
+        setvar attrs[key] = value
+        continue
+      }
+
+      # This is a string literal child
+      call children->append(arg)
+    }
+
+    var node = {type: self.type, attrs, children}
+    if (block is not null) {
+      ctx push (node) {
+        call io->eval(block, vars=nodes)
+      }
+    }
+    ctx emit children (node)
+  }
+
+  var meta = {__invoke__: invoke}
+  var self = {type}
+  return (Object(Object(null, meta), self))
+}
+
+# Construct Node objects for the following tags
+var types = :| h1 h2 h3 h4 p head body link div \
+               table thead tbody th tr td |
+var nodes = {}
+for nodeType in (types) {
+  setvar nodes[nodeType] = Node(nodeType)
+}
+
+# TODO: proper escaping
+func attrKeyEscape(x) { return (x) }
+func attrValEscape(x) { return ("\"$x\"") }
+func childEscape(x) { return (x) }
+
+func attrString(attrs) {
+  ## Stringify an element attributes dict
+  if (attrs is null) {
+    return ('')
+  }
+
+  var parts = ['']
+  for key_, val_ in (attrs) {
+    var key = attrKeyEscape(key_)
+    var val = attrValEscape(val_)
+    call parts->append("$key=$val")
+  }
+  return (parts.join(' '))
+}
+
+func repeatStr(s, n) {
+  ## Return the string `s` repeated `n` times
+  var parts = []
+  for _ in (0..<n) {
+    call parts->append(s)
+  }
+  return (parts.join(''))
+}
+
+proc emit-node (; node; spacing=0) {
+  ## Emit a `Node` as HTML
+  write --end '' -- $[repeatStr(' ', spacing)]
+  if (type(node) === 'Str') {
+    write -- $[childEscape(node)]
+    return
+  }
+
+  write --end '' -- "<$[node.type]$[attrString(node.attrs)]>" 
+  if (len(node.children) > 0) {
+    write
+    for child in (node.children) {
+      emit-node (child, spacing=spacing + 2)
+    }
+    write --end '' -- $[repeatStr(' ', spacing)]
+  }
+  write -- "</$[node.type]>" 
+}
+
+proc document (;;; block) {
+  ## Construct an HTML5 document
+  var root = {type: 'html', attrs: {}, children: []}
+  ctx push (root) {
+    call io->eval(block, vars=nodes)
+  }
+
+  write -- '<!DOCTYPE html>'
+  emit-node (root)
+}
+
+var __provide__ = :| document |

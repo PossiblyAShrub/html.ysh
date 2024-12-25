@@ -1,0 +1,12 @@
+var __provide__ = :| expect-equal |
+
+proc expect-equal (a, b) {
+  diff <(write $a) <(write $b)
+}
+
+if false && is-main {
+  for t in test/*.ysh {
+    write -- "TEST: $t"
+    ysh $t
+  }
+}

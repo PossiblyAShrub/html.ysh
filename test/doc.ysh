@@ -1,0 +1,151 @@
+use html.ysh
+use test.ysh
+
+proc simple-doc {
+  html document {
+    head { : }
+    body {
+      h1 id=title 'Hello, world'
+      p 'Lorem ispum'
+      h2 id=subtitle 'This is a document'
+      p "That's a wrap"
+    }
+  }
+}
+
+test expect-equal $(simple-doc) '''
+<!DOCTYPE html>
+<html>
+  <head></head>
+  <body>
+    <h1 id="title">
+      Hello, world
+    </h1>
+    <p>
+      Lorem ispum
+    </p>
+    <h2 id="subtitle">
+      This is a document
+    </h2>
+    <p>
+      That's a wrap
+    </p>
+  </body>
+</html>'''
+
+proc looping {
+  html document {
+    head { : }
+    body {
+      for x in (1..=4) {
+        h$x id=$x class=test "This is an h$x."
+      }
+    }
+  }
+}
+
+test expect-equal $(looping) '''
+<!DOCTYPE html>
+<html>
+  <head></head>
+  <body>
+    <h1 id="1" class="test">
+      This is an h1.
+    </h1>
+    <h2 id="2" class="test">
+      This is an h2.
+    </h2>
+    <h3 id="3" class="test">
+      This is an h3.
+    </h3>
+    <h4 id="4" class="test">
+      This is an h4.
+    </h4>
+  </body>
+</html>'''
+
+proc looping-nested {
+  html document {
+    head { : }
+    body {
+      for x in (1..=4) {
+        div id=$x class=test {
+          h$x "This is an h$x."
+        }
+      }
+    }
+  }
+}
+
+test expect-equal $(looping-nested) '''
+<!DOCTYPE html>
+<html>
+  <head></head>
+  <body>
+    <div id="1" class="test">
+      <h1>
+        This is an h1.
+      </h1>
+    </div>
+    <div id="2" class="test">
+      <h2>
+        This is an h2.
+      </h2>
+    </div>
+    <div id="3" class="test">
+      <h3>
+        This is an h3.
+      </h3>
+    </div>
+    <div id="4" class="test">
+      <h4>
+        This is an h4.
+      </h4>
+    </div>
+  </body>
+</html>'''
+
+proc link-el {
+  html document {
+    head {
+      link rel=stylesheet href=style.css
+    }
+    body {
+      p 'Style testing'
+    }
+  }
+}
+
+test expect-equal $(link-el) '''
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="style.css"></link>
+  </head>
+  <body>
+    <p>
+      Style testing
+    </p>
+  </body>
+</html>'''
+
+proc many-child {
+  html document {
+    head { : }
+    body {
+      p 'Hello' 'world!'
+    }
+  }
+}
+
+test expect-equal $(many-child) '''
+<!DOCTYPE html>
+<html>
+  <head></head>
+  <body>
+    <p>
+      Hello
+      world!
+    </p>
+  </body>
+</html>'''
