@@ -1,0 +1,41 @@
+use html.ysh
+use test.ysh
+
+proc readme-example {
+  html document {
+    body {
+      h1 id=title 'html.ysh'
+
+      var words = :| generate html from ysh |
+      ol {
+        for word in (words) {
+          li $word
+        }
+      }
+    }
+  }
+}
+
+test expect-equal $(readme-example) '''
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1 id="title">
+      html.ysh
+    </h1>
+    <ol>
+      <li>
+        generate
+      </li>
+      <li>
+        html
+      </li>
+      <li>
+        from
+      </li>
+      <li>
+        ysh
+      </li>
+    </ol>
+  </body>
+</html>'''
