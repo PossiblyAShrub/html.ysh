@@ -1,5 +1,8 @@
 # HTML Templating in YSH
 
+> [!WARNING]
+> this currently does **not** do proper HTML escaping. Do not run on untrusted data.
+
 Generate HTML from YSH.
 
 Tested with YSH 0.24.0.
