@@ -7,7 +7,7 @@ func Node(type) {
     for arg in (args) {
       if (arg ~ / '=' /) {
         # This is an attribute
-        var key, value = arg.split('=')
+        var key, value = arg.split('=', count=1)
         setvar attrs[key] = value
         continue
       }
