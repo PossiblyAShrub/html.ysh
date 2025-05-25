@@ -38,7 +38,7 @@ var nodes = {}
 for nodeType in (types) {
   setvar node = Node(nodeType)
   setvar nodes[nodeType] = node
-  call setVar(nodeType, node)
+  call setVar(nodeType, node, global=true)
 }
 
 # TODO: proper escaping
