@@ -33,7 +33,7 @@ func Node(type) {
 # Construct Node objects for the following tags
 var types = :| h1 h2 h3 h4 p head body link div \
                table thead tbody th tr td title \
-               img meta ul ol li |
+               img meta ul ol li style |
 var nodes = {}
 for nodeType in (types) {
   setvar node = Node(nodeType)
