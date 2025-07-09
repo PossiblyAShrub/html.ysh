@@ -1,0 +1,18 @@
+name: Tests
+on: [push]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Install YSH 0.33.0
+        run: |
+          wget https://oils.pub/download/oils-for-unix-0.33.0.tar.gz
+          tar -xf oils-for-unix-0.33.0.tar.gz
+          cd oils-for-unix-0.33.0
+          ./configure
+          _build/oils.sh
+          sudo ./install
+      - name: Execute Tests
+        run: ysh run-tests.ysh

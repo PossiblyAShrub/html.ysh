@@ -1,0 +1,5 @@
+for t in test/*.ysh {
+  write -- "TEST: $t"
+  ysh $t
+  write
+}

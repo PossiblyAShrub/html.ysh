@@ -6,7 +6,7 @@ proc simple-doc {
     head { : }
     body {
       h1 id=title 'Hello, world'
-      p 'Lorem ispum'
+      p { % 'Lorem ispum' }
       h2 id=subtitle 'This is a document'
       p "That's a wrap"
     }
