@@ -5,7 +5,7 @@
 
 Generate HTML from YSH.
 
-Tested with YSH 0.24.0.
+Tested with YSH 0.33.0.
 
 ## Example
 
